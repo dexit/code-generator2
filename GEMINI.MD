@@ -1,0 +1,1 @@
+This file serves as the primary documentation for the Gemini CLI agent, outlining its purpose, operational mode, and core functionalities within the project context. It details the SuperSubAgent Plan & Developer Mode, emphasizing structured development, analysis, and adherence to project conventions.

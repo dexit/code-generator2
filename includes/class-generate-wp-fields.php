@@ -247,6 +247,217 @@ This version fixes a security related bug. Upgrade immediately.',
 			),
 		);
 // </editor-fold>
+		$settings['Admin_Page'] = array(
+			'tab'        => 'Admin Page',
+			'tab_descr'  => 'Custom Admin Page Generator',
+			'title'      => 'Use this tool to create custom code for <a href="https://developer.wordpress.org/reference/functions/add_menu_page/" target="_blank">add_menu_page()</a> or <a href="https://developer.wordpress.org/reference/functions/add_submenu_page/" target="_blank">add_submenu_page()</a> functions.',
+			'fields'     => array(
+				0 => array(
+					'label'       => 'Menu Type',
+					'description' => 'Select whether to create a top-level menu or a submenu.',
+					'id'          => 'menu_type',
+					'type'        => 'select',
+					'options'     => array(
+						'top_level' => 'Top-Level Menu',
+						'submenu'   => 'Submenu Page',
+					),
+					'default'     => 'top_level',
+				),
+				1 => array(
+					'label'       => 'Parent Slug (for Submenu)',
+					'description' => 'The slug of the parent menu. Required for submenu pages.',
+					'id'          => 'parent_slug',
+					'placeholder' => 'edit.php',
+					'type'        => 'text',
+					'default'     => '',
+					'data'        => array(
+						'parent'     => 'menu_type',
+						'parent-val' => 'submenu',
+					),
+				),
+				2 => array(
+					'label'       => 'Page Title',
+					'description' => 'The text to be displayed in the title tags of the page when the menu is selected.',
+					'id'          => 'page_title',
+					'placeholder' => 'My Custom Page',
+					'type'        => 'text',
+					'default'     => '',
+				),
+				3 => array(
+					'label'       => 'Menu Title',
+					'description' => 'The text to be used for the menu item itself.',
+					'id'          => 'menu_title',
+					'placeholder' => 'Custom Page',
+					'type'        => 'text',
+					'default'     => '',
+				),
+				4 => array(
+					'label'       => 'Capability',
+					'description' => 'The capability required for this menu to be displayed to the user.',
+					'id'          => 'capability',
+					'placeholder' => 'manage_options',
+					'type'        => 'text',
+					'default'     => 'manage_options',
+				),
+				5 => array(
+					'label'       => 'Menu Slug',
+					'description' => 'The unique slug name to refer to this menu by (should be unique for this menu).',
+					'id'          => 'menu_slug',
+					'placeholder' => 'my-custom-page',
+					'type'        => 'text',
+					'default'     => '',
+				),
+				6 => array(
+					'label'       => 'Function Name',
+					'description' => 'The callback function to render the page content.',
+					'id'          => 'function_name',
+					'placeholder' => 'render_my_custom_page',
+					'type'        => 'text',
+					'default'     => 'render_my_custom_page',
+				),
+				7 => array(
+					'label'       => 'Icon URL (for Top-Level)',
+					'description' => 'The URL to the icon to be used for this menu. Required for top-level menus.',
+					'id'          => 'icon_url',
+					'placeholder' => 'dashicons-admin-generic',
+					'type'        => 'text',
+					'default'     => 'dashicons-admin-generic',
+					'data'        => array(
+						'parent'     => 'menu_type',
+						'parent-val' => 'top_level',
+					),
+				),
+				8 => array(
+					'label'       => 'Position (for Top-Level)',
+					'description' => 'The position in the menu order the icon should appear. Required for top-level menus.',
+					'id'          => 'position',
+					'placeholder' => '10',
+					'type'       => 'number',
+					'default'     => '10',
+					'min'         => '1',
+					'max'         => '99',
+					'data'        => array(
+						'parent'     => 'menu_type',
+						'parent-val' => 'top_level',
+					),
+				),
+				9 => array(
+					'label'       => 'Text Domain',
+					'description' => 'Text Domain for translation. Optional.',
+					'id'          => 'text_domain',
+					'placeholder' => 'your-text-domain',
+					'type'        => 'text',
+					'default'     => '',
+				),
+			),
+		);
+// </editor-fold>
+
+// <editor-fold>
+		$settings['DB_Table_CRUD'] = array(
+			'tab'        => 'DB Table & CRUD',
+			'tab_descr'  => 'Custom Database Table & CRUD Generator',
+			'title'      => 'Use this tool to generate PHP code for defining a custom database table and basic CRUD operations using WordPress\'s <a href="https://developer.wordpress.org/reference/classes/wpdb/" target="_blank">$wpdb</a> class.',
+			'fields'     => array(
+				0 => array(
+					'label'       => 'Table Name',
+					'description' => 'The name of the database table (without prefix).',
+					'id'          => 'table_name',
+					'placeholder' => 'my_custom_table',
+					'type'        => 'text',
+					'default'     => '',
+				),
+				1 => array(
+					'label'       => 'Function Name Prefix',
+					'description' => 'Prefix for the generated CRUD functions.',
+					'id'          => 'function_prefix',
+					'placeholder' => 'my_custom_table',
+					'type'        => 'text',
+					'default'     => 'my_custom_table',
+				),
+				2 => array(
+					'label'       => 'Column Definitions',
+					'description' => 'Define your table columns (Name:Type:Length:Nullable:Default:Extra). Example: id:mediumint:9:NOT NULL:AUTO_INCREMENT, name:tinytext:NULL:NULL:NULL',
+					'id'          => 'columns',
+					'placeholder' => 'id:mediumint:9:NOT NULL:AUTO_INCREMENT:PRIMARY KEY, name:tinytext:NULL:NULL:NULL:NULL',
+					'type'        => 'textarea',
+					'default'     => 'id:mediumint:9:NOT NULL:AUTO_INCREMENT:PRIMARY KEY, name:tinytext:NULL:NULL:NULL:NULL',
+				),
+				3 => array(
+					'label'       => 'Text Domain',
+					'description' => 'Text Domain for translation. Optional.',
+					'id'          => 'text_domain',
+					'placeholder' => 'your-text-domain',
+					'type'        => 'text',
+					'default'     => '',
+				),
+			),
+		);
+// </editor-fold>
+
+// <editor-fold>
+		$settings['REST_API_Endpoint'] = array(
+			'tab'        => 'REST API',
+			'tab_descr'  => 'Custom REST API Endpoint Generator',
+			'title'      => 'Use this tool to generate the foundational code for registering a custom WordPress REST API route and an endpoint.',
+			'fields'     => array(
+				0 => array(
+					'label'       => 'Namespace',
+					'description' => 'The first part of the URL for the REST API route.',
+					'id'          => 'namespace',
+					'placeholder' => 'myplugin/v1',
+					'type'        => 'text',
+					'default'     => 'myplugin/v1',
+				),
+				1 => array(
+					'label'       => 'Route',
+					'description' => 'The second part of the URL for the REST API route.',
+					'id'          => 'route',
+					'placeholder' => '/custom-endpoint',
+					'type'        => 'text',
+					'default'     => '/custom-endpoint',
+				),
+				2 => array(
+					'label'       => 'Method',
+					'description' => 'The HTTP method for the endpoint.',
+					'id'          => 'method',
+					'type'        => 'select',
+					'options'     => array(
+						'GET'    => 'GET',
+						'POST'   => 'POST',
+						'PUT'    => 'PUT',
+						'DELETE' => 'DELETE',
+					),
+					'default'     => 'GET',
+				),
+				3 => array(
+					'label'       => 'Callback Function',
+					'description' => 'The name of the function to handle the request.',
+					'id'          => 'callback',
+					'placeholder' => 'handle_custom_rest_request',
+					'type'        => 'text',
+					'default'     => 'handle_custom_rest_request',
+				),
+				4 => array(
+					'label'       => 'Permission Callback',
+					'description' => 'The name of the function to check permissions.',
+					'id'          => 'permission_callback',
+					'placeholder' => 'check_custom_rest_permissions',
+					'type'        => 'text',
+					'default'     => '__return_true',
+				),
+				5 => array(
+					'label'       => 'Text Domain',
+					'description' => 'Text Domain for translation. Optional.',
+					'id'          => 'text_domain',
+					'placeholder' => 'your-text-domain',
+					'type'        => 'text',
+					'default'     => '',
+				),
+			),
+		);
+// </editor-fold>
+
 // <editor-fold>
 		$settings['Menu'] = array(
 			'tab'		 => 'Menu',

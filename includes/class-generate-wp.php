@@ -143,9 +143,6 @@ class Generate_WP {
 		add_action( 'init', array( $this, 'load_localisation' ), 0 );
 	} // End __construct ()
 
-	/**
-	 * AJAX. Generate code
-	 */
 	public function generate_code() {
 		$data = filter_input( INPUT_POST, 'settings', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 		if ( empty( $data['_wpnonce'] ) || ! wp_verify_nonce( $data['_wpnonce'], 'generate_wp_settings-options' ) ) {
@@ -155,34 +152,40 @@ class Generate_WP {
 		if ( empty( $data['tab'] ) ) {
 			wp_send_json_error( __( 'A wrong tool name', 'ub' ) );
 		}
-		$tool     = esc_attr( str_replace( [' ', ':', ], '_', strtolower( $data['tab'] ) ) );
-		$filename =  dirname( __FILE__ ) . '/templates/' . $tool . '.tpl';
-		if ( ! file_exists( $filename ) ) {
-			wp_send_json_error( __( 'A wrong tool name - ' . $tool, 'ub' ) );
+
+		// Sanitize tab to prevent directory traversal
+		$tool = sanitize_key( $data['tab'] );
+		// Ensure the tool name only contains allowed characters for filenames and prevent traversal
+		$tool = preg_replace( '/[^a-zA-Z0-9_\-]/', '', $tool );
+		$filename = dirname( __FILE__ ) . '/templates/' . $tool . '.tpl';
+
+		// Additional check to ensure we are not including files outside of the templates directory
+		if ( ! file_exists( $filename ) || strpos( realpath( $filename ), realpath( dirname( __FILE__ ) . '/templates/' ) ) !== 0 ) {
+			wp_send_json_error( __( 'Invalid template file specified.', 'ub' ) );
 		}
+
 		ob_start();
 		extract( $data );
 		include $filename;
 		$content = ob_get_clean();
 		$content = htmlspecialchars( $content );
-//		$content = file_get_contents( $filename );
 
 		$settings         = $this->settings->settings;
-		$current_settings = ! empty( $settings[ $data['tab'] ] && ! empty( $settings[ $data['tab'] ]['fields'] ) )
-				? $settings[ $data['tab'] ]['fields'] : [];
+		$current_settings = ! empty( $settings[ $data['tab'] ] ) && ! empty( $settings[ $data['tab'] ]['fields'] )
+				? $settings[ $data['tab'] ]['fields'] : array();
 		$coma_attrs = array_filter( array_column( $current_settings, 'list', 'id' ) );
 		foreach ( array_keys( $coma_attrs ) as $id ) {
 			if ( strpos( $content, '{{' . $id . '}}' ) ) {
-				if ( ! empty( $data['wpg_' . $id ] ) ) {
-					$value = $data['wpg_' . $id ];
+				if ( ! empty( $data[ 'wpg_' . $id ] ) ) {
+					$value = $data[ 'wpg_' . $id ];
 					if ( is_string( $value ) ) {
 						$value = explode( ',', $value );
 					}
-					$value = array_values( array_map( 'trim', $value ) );
-					$params = array_map( function( $k, $v ){
+					$value  = array_values( array_map( 'trim', $value ) );
+					$params = array_map( function( $k, $v ) {
 						return '$param' . ++$k . ' = \'' . $v . '\'';
 					}, array_keys( $value ), $value );
-					$content = str_replace( '{{args_param}}', implode(', ', $params ), $content );
+					$content = str_replace( '{{args_param}}', implode( ', ', $params ), $content );
 					$content = str_replace( '{{' . $id . '}}', "'" . implode( "', '", $value ) . "'", $content );
 				}
 			}
@@ -196,13 +199,17 @@ class Generate_WP {
 					if ( isset( $data[ 'wpg_' . $match ] ) ) {
 						$replace_to = $data[ 'wpg_' . $match ];
 						if ( 'readme' !== $tool ) {
-							$replace_to = str_replace( "\r\n", "\n\t", $replace_to );
+							$replace_to = str_replace( array( "\r\n", "\r" ), "\n\t", $replace_to );
 						}
 					}
 					$content = str_replace( '{{' . $match . '}}', $replace_to, $content );
 				}
 			}
 		}
+
+		// Add custom placeholder for unique REST API function name
+		$namespace_function = str_replace( array( '/', '-' ), '_', $data['namespace'] ) . '_' . str_replace( array( '/', '-' ), '_', trim( $data['route'], '/' ) );
+		$content = str_replace( '{{namespace_function}}', $namespace_function, $content );
 
 		wp_send_json_success( $content );
 	}
