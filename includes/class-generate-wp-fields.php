@@ -349,6 +349,14 @@ This version fixes a security related bug. Upgrade immediately.',
 					'type'        => 'text',
 					'default'     => '',
 				),
+				10 => array(
+					'label'       => 'Sample Setting',
+					'description' => 'This is a sample setting for the admin page.',
+					'id'          => 'sample_setting',
+					'placeholder' => 'Enter your setting here',
+					'type'        => 'text',
+					'default'     => '',
+				),
 			),
 		);
 // </editor-fold>

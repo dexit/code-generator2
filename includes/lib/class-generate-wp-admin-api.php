@@ -72,6 +72,13 @@ class Generate_WP_Admin_API {
 			}
 		}
 
+		// Add custom attributes for conditional display (e.g., for showing/hiding fields)
+		if ( ! empty( $field['data'] ) && is_array( $field['data'] ) ) {
+			foreach ( $field['data'] as $data_key => $data_val ) {
+				$props .= ' data-' . esc_attr( $data_key ) . '="' . esc_attr( $data_val ) . '"';
+			}
+		}
+
 		switch ( $field['type'] ) {
 			case 'text':
 			case 'number':

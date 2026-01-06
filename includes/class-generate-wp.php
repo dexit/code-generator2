@@ -130,9 +130,25 @@ class Generate_WP {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 10, 1 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_styles' ), 10, 1 );
 
-		// Load API for generic admin functions.
-		if ( is_admin() ) {
-			$this->admin = new Generate_WP_Admin_API();
+		// Enqueue custom admin scripts for UI interactivity
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ), 12 ); // Higher priority to ensure other scripts are enqueued first
+
+	/**
+	 * Enqueue custom admin scripts.
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function enqueue_admin_scripts() {
+		wp_enqueue_script(
+			$this->_token . '-admin-custom',
+			$this->assets_url . 'js/admin.js',
+			array( 'jquery' ), // Dependencies
+			$this->_version,
+			true // Load in footer
+		);
+	}
+
 
 			// AJAX.
 			add_action( 'wp_ajax_gwp_generate_code', array( $this, 'generate_code' ) );
